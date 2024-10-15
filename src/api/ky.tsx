@@ -1,5 +1,5 @@
 import ky, { KyInstance } from "ky";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 
 interface KyContextValue {
   ky: KyInstance;
@@ -16,13 +16,15 @@ export const KyInstanceProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const value = useMemo(() => ({ ky: defaultInstance }), []);
-
-  return <KyContext.Provider value={value}>{children}</KyContext.Provider>;
+  return (
+    <KyContext.Provider value={{ ky: defaultInstance }}>
+      {children}
+    </KyContext.Provider>
+  );
 };
 
 export const useKyInstance = () => {
-  const { ky } = useContext(KyContext)
+  const { ky } = useContext(KyContext);
 
   return ky;
 };

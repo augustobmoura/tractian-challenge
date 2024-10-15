@@ -1,5 +1,8 @@
 import { KyInstance } from "ky";
 import { urlPath } from "./urlPath";
+import { useKyInstance } from "./ky";
+import { useCompany } from "./company";
+import { useMemo } from "react";
 
 export type Id = string;
 
@@ -32,7 +35,7 @@ export interface Asset {
   locationId?: Id | null;
 }
 
-export const buildApi = (ky: KyInstance, defaultCompanyId: Id) => {
+export const buildAssetsApi = (ky: KyInstance, defaultCompanyId: Id) => {
   const getCompanies = () => ky.get("companies").json<Company[]>();
 
   const getAssets = (companyId = defaultCompanyId) =>
@@ -49,3 +52,16 @@ export const buildApi = (ky: KyInstance, defaultCompanyId: Id) => {
     getLocations,
   };
 };
+
+export const useAssetsApi = () => {
+  const ky = useKyInstance();
+  const companyId = useCompany();
+
+  if (companyId == null) {
+    throw new Error("Company ID is not provided!");
+  }
+
+  const api = useMemo(() => buildAssetsApi(ky, companyId), [ky, companyId]);
+
+  return api
+}

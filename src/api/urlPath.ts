@@ -11,8 +11,8 @@
 export const urlPath = (strings: TemplateStringsArray, ...values: string[]) =>
   strings.reduce((prev, next, i) => {
     const value = encodeURIComponent(values[i - 1]);
-    const cleanedPrev = prev.replace(/\/$/, "");
-    const cleanedNext = next.replace(/^\//, "");
+    const cleanedPrev = prev.endsWith('/') ? prev.slice(0, -1) : prev;
+    const cleanedNext = next.startsWith('/') ? next.slice(1) : next;
 
     return `${cleanedPrev}/${value}/${cleanedNext}`;
   });
